@@ -1,0 +1,373 @@
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablet and below (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .header-title {
+        font-size: var(--font-size-lg);
+    }
+
+    .hero-prediction {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-container {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Typography adjustments */
+    :root {
+        --font-size-xs: 0.7rem;
+        --font-size-sm: 0.8rem;
+        --font-size-base: 0.9rem;
+        --font-size-lg: 1.1rem;
+        --font-size-xl: 1.3rem;
+        --font-size-2xl: 1.6rem;
+        --font-size-3xl: 2rem;
+    }
+
+    /* Spacing adjustments */
+    :root {
+        --spacing-xs: 0.4rem;
+        --spacing-sm: 0.8rem;
+        --spacing-md: 1.2rem;
+        --spacing-lg: 1.6rem;
+        --spacing-xl: 2rem;
+    }
+
+    /* Header */
+    .header .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-title {
+        font-size: var(--font-size-xl);
+        text-align: center;
+    }
+
+    .header-status {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .api-endpoint {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .api-endpoint input {
+        width: 100%;
+        min-width: auto;
+    }
+
+    /* Cards */
+    .card {
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        border-radius: var(--radius-md);
+    }
+
+    .section-title {
+        font-size: var(--font-size-lg);
+    }
+
+    /* Upload area */
+    .upload-area {
+        padding: var(--spacing-lg);
+    }
+
+    .upload-placeholder svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .upload-text {
+        font-size: var(--font-size-base);
+    }
+
+    /* Preview */
+    .preview-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .preview-actions {
+        flex-direction: column;
+    }
+
+    .preview-actions .btn {
+        width: 100%;
+    }
+
+    /* Results */
+    .hero-prediction {
+        grid-template-columns: 1fr;
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+
+    .predicted-action {
+        font-size: var(--font-size-xl);
+    }
+
+    .confidence-value {
+        font-size: var(--font-size-2xl);
+    }
+
+    .prediction-item {
+        grid-template-columns: 25px 1fr;
+        gap: var(--spacing-xs);
+    }
+
+    .prediction-confidence {
+        grid-column: 2;
+        margin-top: var(--spacing-xs);
+    }
+
+    /* Heatmap controls */
+    .view-modes {
+        flex-direction: column;
+    }
+
+    .mode-btn {
+        width: 100%;
+    }
+
+    /* Actions grid */
+    .actions-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: var(--spacing-xs);
+    }
+
+    .action-tag {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+
+    /* Toast notifications */
+    .toast-container {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        left: var(--spacing-sm);
+        max-width: none;
+    }
+
+    .toast {
+        padding: var(--spacing-sm);
+    }
+
+    /* Buttons */
+    .btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+
+    /* Quick presets */
+    .quick-presets {
+        flex-wrap: wrap;
+    }
+
+    .preset-btn {
+        flex: 1;
+        min-width: 60px;
+    }
+
+    /* Metadata */
+    .result-metadata {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .metadata-item {
+        padding: var(--spacing-sm);
+        background: var(--color-light);
+        border-radius: var(--radius-sm);
+    }
+}
+
+/* Small mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .header-title {
+        font-size: var(--font-size-lg);
+    }
+
+    .predicted-action {
+        font-size: var(--font-size-lg);
+    }
+
+    .confidence-value {
+        font-size: var(--font-size-xl);
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .upload-area {
+        padding: var(--spacing-md);
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .btn {
+        min-height: 48px;
+        min-width: 48px;
+    }
+
+    .preset-btn,
+    .mode-btn {
+        min-height: 44px;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .card:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-outline:hover {
+        transform: none;
+    }
+
+    .action-tag:hover {
+        transform: none;
+    }
+
+    /* Better tap feedback */
+    .btn:active {
+        transform: scale(0.98);
+    }
+
+    .action-tag:active {
+        transform: scale(0.98);
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Ensure crisp rendering on retina displays */
+    #heatmapCanvas {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Landscape mode on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-prediction {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .upload-area {
+        padding: var(--spacing-md);
+    }
+
+    .upload-placeholder svg {
+        width: 40px;
+        height: 40px;
+        margin-bottom: var(--spacing-sm);
+    }
+}
+
+/* Print styles */
+@media print {
+    /* Hide interactive elements */
+    .header,
+    .footer,
+    .upload-section,
+    .advanced-options,
+    .preview-actions,
+    .heatmap-controls,
+    .toast-container {
+        display: none !important;
+    }
+
+    /* Optimize for printing */
+    body {
+        background: white;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+
+    .hero-prediction {
+        page-break-inside: avoid;
+    }
+
+    /* Ensure images print well */
+    img {
+        max-width: 100%;
+        page-break-inside: avoid;
+    }
+}
+
+/* Dark mode support (if system preference is dark) */
+@media (prefers-color-scheme: dark) {
+    /* Optional: Add dark mode styles here if needed
+    :root {
+        --color-dark: #ecf0f1;
+        --color-light: #2c3e50;
+        --color-white: #1a1a1a;
+    }
+
+    body {
+        background-color: #1a1a1a;
+        color: #ecf0f1;
+    }
+    */
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .spinner {
+        animation: none;
+        border-top-color: var(--color-primary);
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .btn {
+        border: 2px solid currentColor;
+    }
+
+    .card {
+        border: 1px solid var(--color-gray);
+    }
+
+    .upload-area {
+        border-width: 4px;
+    }
+}

@@ -1,0 +1,184 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv
+
+# PyTorch
+*.pth
+*.pt
+*.ckpt
+*.pkl
+*.pickle
+
+# Model Checkpoints (keep structure but ignore large files)
+checkpoints/**/*.pth
+checkpoints/**/*.pt
+checkpoints/**/*.ckpt
+checkpoints/**/*.pkl
+!checkpoints/.gitkeep
+
+# Datasets
+data/
+dataset/
+datasets/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.webp
+*.mp4
+*.avi
+*.mov
+*.mkv
+# Exception: keep sample images if needed
+!sample_images/
+!examples/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+*.out
+*.err
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.cache
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Documentation
+docs/_build/
+site/
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Frontend Build (if using build tools in future)
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+frontend/build/
+
+# FastAPI
+instance/
+.webassets-cache
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# pytype
+.pytype/
+
+# Cython
+*.c
+*.cpp
+cython_debug/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Compressed Files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Large Files
+*.h5
+*.hdf5
+*.npy
+*.npz
+
+# Training Outputs
+runs/
+outputs/
+wandb/
+mlruns/
+tensorboard_logs/
+
+# Specific to this project
+*.pth.tar
+best_model.pth
+checkpoint.pth
