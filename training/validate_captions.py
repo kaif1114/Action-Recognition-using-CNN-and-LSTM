@@ -24,7 +24,6 @@ def validate_caption_model(encoder, decoder, val_loader, criterion, vocabulary, 
     decoder.eval()
 
     total_loss = 0
-    total_words = 0
     num_batches = 0
 
     # Lists to store sample captions
@@ -57,7 +56,9 @@ def validate_caption_model(encoder, decoder, val_loader, criterion, vocabulary, 
                     predictions[i, :decode_len, :],
                     targets[i, :decode_len]
                 )
-                total_words += decode_len
+
+            # Average over batch (same as training)
+            batch_loss = batch_loss / len(decode_lengths)
 
             total_loss += batch_loss.item()
             num_batches += 1
@@ -76,8 +77,8 @@ def validate_caption_model(encoder, decoder, val_loader, criterion, vocabulary, 
                     )
                     sample_captions_pred.append(pred_caption)
 
-    # Calculate average loss per word
-    avg_loss = total_loss / total_words if total_words > 0 else 0
+    # Calculate average loss per batch (same as training)
+    avg_loss = total_loss / num_batches if num_batches > 0 else 0
 
     # Calculate perplexity
     perplexity = math.exp(min(avg_loss, 100))  # Cap to prevent overflow
