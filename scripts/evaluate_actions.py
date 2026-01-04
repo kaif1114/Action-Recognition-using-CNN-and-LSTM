@@ -167,7 +167,7 @@ def main():
     config = {
         'checkpoint_path': 'checkpoints/actions/best_model.pth',
         'labels_path': 'checkpoints/action_labels.pkl',
-        'image_dir': 'dataset/JPEGImages',
+        'image_dir': 'dataset/stanford_40_actions/JPEGImages',
         'output_dir': 'outputs/evaluation',
         'batch_size': 32,
         'num_workers': 4

@@ -237,7 +237,7 @@ if __name__ == "__main__":
     # Create small validation dataset
     print("\nLoading validation dataset...")
     val_dataset = Stanford40Dataset(
-        image_dir="dataset/JPEGImages",
+        image_dir="dataset/stanford_40_actions/JPEGImages",
         split_file='train',
         action_labels=action_labels,
         transform=val_transform,

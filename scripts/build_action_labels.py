@@ -15,7 +15,7 @@ def main():
     print("="*60)
 
     # Paths
-    actions_file = "dataset/ImageSplits/actions.txt"
+    actions_file = "dataset/stanford_40_actions/ImageSplits/actions.txt"
     output_path = "checkpoints/action_labels.pkl"
 
     # Check if actions file exists

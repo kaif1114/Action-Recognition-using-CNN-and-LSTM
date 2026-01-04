@@ -22,8 +22,8 @@ def main():
     # Configuration
     config = {
         # Dataset paths
-        'image_dir': 'dataset/JPEGImages',
-        'splits_dir': 'dataset/ImageSplits',
+        'image_dir': 'dataset/stanford_40_actions/JPEGImages',
+        'splits_dir': 'dataset/stanford_40_actions/ImageSplits',
         'label_path': 'checkpoints/action_labels.pkl',
         'checkpoint_dir': 'checkpoints/actions',
 

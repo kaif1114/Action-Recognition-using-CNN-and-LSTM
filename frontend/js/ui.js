@@ -117,6 +117,7 @@ export function displayPredictionResults(data, imageUrl) {
     const predictedAction = document.getElementById('predictedAction');
     const confidenceValue = document.getElementById('confidenceValue');
     const confidenceFill = document.getElementById('confidenceFill');
+    const captionText = document.getElementById('captionText');
     const predictionsList = document.getElementById('predictionsList');
     const resultMetadata = document.getElementById('resultMetadata');
 
@@ -141,6 +142,13 @@ export function displayPredictionResults(data, imageUrl) {
     setTimeout(() => {
         confidenceFill.style.width = `${confidence * 100}%`;
     }, 100);
+
+    // Set caption
+    if (data.caption) {
+        captionText.textContent = data.caption;
+    } else {
+        captionText.textContent = 'Caption not available';
+    }
 
     // Render top-k predictions
     renderTopKPredictions(data.top_k, predictionsList);

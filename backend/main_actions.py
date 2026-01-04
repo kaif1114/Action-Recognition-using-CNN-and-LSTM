@@ -17,8 +17,9 @@ from PIL import Image
 import torch.nn.functional as F
 
 from data.action_labels import ActionLabels
+from data.vocabulary import Vocabulary
 from data.transforms import get_inference_transform
-from models.model import create_action_model
+from models.unified_model import load_unified_model
 
 
 # Pydantic models
@@ -29,9 +30,10 @@ class PredictionDetail(BaseModel):
 
 
 class ActionResponse(BaseModel):
-    """Response model for action prediction."""
+    """Response model for action prediction with caption."""
     action: str
     confidence: float
+    caption: str
     top_k: List[PredictionDetail]
     attention_heatmap: Optional[List[List[float]]] = None
     processing_time: float
@@ -50,15 +52,16 @@ class HealthResponse(BaseModel):
 # Global variables for model and labels
 model = None
 action_labels = None
+vocabulary = None
 device = None
 transform = None
 
 
 # FastAPI app
 app = FastAPI(
-    title="Action Recognition API",
-    description="API for recognizing human actions in images using CNN-LSTM model with spatial attention",
-    version="1.0.0"
+    title="Action Recognition + Caption Generation API",
+    description="API for recognizing human actions and generating captions for images using unified multi-task model with spatial attention",
+    version="2.0.0"
 )
 
 
@@ -74,29 +77,43 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    """Load model and action labels on startup."""
-    global model, action_labels, device, transform
+    """Load model, action labels, and vocabulary on startup."""
+    global model, action_labels, vocabulary, device, transform
 
     print("="*80)
-    print("Starting Action Recognition API Server")
+    print("Starting Combined Action Recognition + Caption Generation API Server")
     print("="*80)
 
     # Paths - relative to project root
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    model_path = os.path.join(base_dir, "checkpoints", "actions", "best_model.pth")
+    action_checkpoint = os.path.join(base_dir, "checkpoints", "actions", "best_model.pth")
+    caption_checkpoint = os.path.join(base_dir, "checkpoints", "captions", "best_model.pth")
     labels_path = os.path.join(base_dir, "checkpoints", "action_labels.pkl")
+    vocabulary_path = os.path.join(base_dir, "checkpoints", "vocabulary.pkl")
 
     # Check if files exist
-    if not os.path.exists(model_path):
-        print(f"Warning: Model checkpoint not found at {model_path}")
-        print("API will start but action prediction will not work until model is available.")
-        print(f"Please train the model first using: python run_action_training.py")
+    if not os.path.exists(action_checkpoint):
+        print(f"Warning: Action checkpoint not found at {action_checkpoint}")
+        print("API will start but prediction will not work until model is available.")
+        print(f"Please train the action model first using: python run_action_training.py")
+        return
+
+    if not os.path.exists(caption_checkpoint):
+        print(f"Warning: Caption checkpoint not found at {caption_checkpoint}")
+        print("API will start but caption generation will not work until model is available.")
+        print(f"Please train the caption model first using: python run_caption_training.py")
         return
 
     if not os.path.exists(labels_path):
         print(f"Warning: Action labels not found at {labels_path}")
         print("API will start but action prediction will not work until labels are available.")
         print(f"Please build labels first using: python scripts/build_action_labels.py")
+        return
+
+    if not os.path.exists(vocabulary_path):
+        print(f"Warning: Vocabulary not found at {vocabulary_path}")
+        print("API will start but caption generation will not work until vocabulary is available.")
+        print(f"Please build vocabulary first using: python scripts/build_vocabulary.py")
         return
 
     # Device
@@ -111,31 +128,28 @@ async def startup_event():
     # Load action labels
     print(f"\nLoading action labels from: {labels_path}")
     action_labels = ActionLabels.load(labels_path)
-    print(f"Loaded {action_labels.num_classes} action classes")
+    print(f"✓ Loaded {action_labels.num_classes} action classes")
 
-    # Load model
-    print(f"\nLoading model from: {model_path}")
-    checkpoint = torch.load(model_path, map_location=device)
+    # Load vocabulary
+    print(f"\nLoading vocabulary from: {vocabulary_path}")
+    vocabulary = Vocabulary.load(vocabulary_path)
+    print(f"✓ Loaded vocabulary with {len(vocabulary)} words")
 
-    # Get num_classes from checkpoint
-    num_classes = checkpoint.get('num_classes', 40)
-
-    # Create model
-    model = create_action_model(num_classes=num_classes, device=device)
-    model.load_state_dict(checkpoint['model_state_dict'])
-    model.eval()
-
-    # Print model info
-    if 'epoch' in checkpoint:
-        print(f"Model trained for {checkpoint['epoch']} epochs")
-    if 'val_acc' in checkpoint:
-        print(f"Validation accuracy: {checkpoint['val_acc']:.4f}")
+    # Load unified model
+    print(f"\nLoading unified model...")
+    print(f"  Action checkpoint: {action_checkpoint}")
+    print(f"  Caption checkpoint: {caption_checkpoint}")
+    model = load_unified_model(action_checkpoint, caption_checkpoint, device)
+    print("✓ Unified model loaded successfully")
 
     # Get inference transform
     transform = get_inference_transform()
 
     print("\n" + "="*80)
     print("API Server Ready!")
+    print("  - Action Recognition: ✓")
+    print("  - Caption Generation: ✓")
+    print("  - Attention Visualization: ✓")
     print("="*80)
 
 
@@ -143,12 +157,20 @@ async def startup_event():
 async def root():
     """Root endpoint."""
     return {
-        "message": "Action Recognition API",
-        "version": "1.0.0",
-        "model": "CNN-LSTM with Spatial Attention",
-        "dataset": "Stanford 40 Actions",
+        "message": "Action Recognition + Caption Generation API",
+        "version": "2.0.0",
+        "model": "Unified Multi-Task Model with Spatial Attention",
+        "datasets": {
+            "actions": "Stanford 40 Actions (40 classes)",
+            "captions": "COCO Actions Subset (5004 vocab)"
+        },
+        "capabilities": [
+            "Action Recognition",
+            "Image Caption Generation",
+            "Attention Visualization"
+        ],
         "endpoints": {
-            "/api/predict": "POST - Predict action for an image",
+            "/api/predict": "POST - Predict action and generate caption for an image",
             "/api/actions": "GET - List all action classes",
             "/health": "GET - Health check",
             "/docs": "GET - API documentation"
@@ -191,7 +213,7 @@ async def predict_action(
     include_attention: Optional[bool] = False
 ):
     """
-    Predict action for an uploaded image.
+    Predict action and generate caption for an uploaded image.
 
     Args:
         file: Uploaded image file
@@ -199,13 +221,13 @@ async def predict_action(
         include_attention: Whether to include attention heatmap in response
 
     Returns:
-        ActionResponse with predicted action and details
+        ActionResponse with predicted action, caption, and details
     """
-    # Check if model and labels are loaded
-    if model is None or action_labels is None:
+    # Check if model, labels, and vocabulary are loaded
+    if model is None or action_labels is None or vocabulary is None:
         raise HTTPException(
             status_code=503,
-            detail="Model or action labels not loaded. Please check server logs."
+            detail="Model, action labels, or vocabulary not loaded. Please check server logs."
         )
 
     # Validate top_k
@@ -232,31 +254,31 @@ async def predict_action(
         # Preprocess image
         image_tensor = transform(image).unsqueeze(0).to(device)
 
-        # Predict action
-        with torch.no_grad():
-            logits, attention_weights = model(image_tensor)
-            probs = F.softmax(logits, dim=1)
-            top_k_probs, top_k_indices = torch.topk(probs, min(top_k, action_labels.num_classes))
-
-        # Format top-k predictions
-        top_k_predictions = []
-        for prob, idx in zip(top_k_probs[0], top_k_indices[0]):
-            top_k_predictions.append(PredictionDetail(
-                action=action_labels.decode_action(idx.item()),
-                confidence=round(prob.item(), 4)
-            ))
+        # Predict combined (action + caption)
+        model.eval()
+        result = model.predict_combined(image_tensor, vocabulary, action_labels, device, top_k=top_k)
 
         processing_time = time.time() - start_time
+
+        # Format top-k predictions
+        top_k_predictions = [
+            PredictionDetail(
+                action=pred['action'],
+                confidence=round(pred['confidence'], 4)
+            )
+            for pred in result['top_k']
+        ]
 
         # Prepare attention heatmap if requested
         attention_heatmap = None
         if include_attention:
-            attention_map = attention_weights[0].view(7, 7).cpu().numpy()
+            attention_map = result['attention_map']
             attention_heatmap = attention_map.tolist()
 
         return ActionResponse(
-            action=top_k_predictions[0].action,
-            confidence=top_k_predictions[0].confidence,
+            action=result['action'],
+            confidence=round(result['confidence'], 4),
+            caption=result['caption'],
             top_k=top_k_predictions,
             attention_heatmap=attention_heatmap,
             processing_time=round(processing_time, 3),

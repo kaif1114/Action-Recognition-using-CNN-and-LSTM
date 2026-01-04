@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Action Recognition System</title>
+    <title>Action Recognition & Caption Generation System</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
@@ -12,7 +12,7 @@
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <h1 class="header-title">Action Recognition System</h1>
+            <h1 class="header-title">Action Recognition & Caption Generation</h1>
             <div class="header-status">
                 <div class="health-badge" id="healthBadge">
                     <span class="status-dot"></span>
@@ -123,6 +123,19 @@
                     </div>
                 </div>
 
+                <!-- Generated Caption -->
+                <div class="caption-section">
+                    <h4 class="subsection-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Generated Caption
+                    </h4>
+                    <div class="caption-container">
+                        <p class="caption-text" id="captionText">A person riding a bike on a street</p>
+                    </div>
+                </div>
+
                 <!-- Top-K Predictions -->
                 <div class="topk-predictions">
                     <h4 class="subsection-title">Top Predictions</h4>
@@ -169,8 +182,8 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Action Recognition System</p>
-            <p>Powered by Stanford 40 Actions Dataset</p>
+            <p>&copy; 2025 Action Recognition & Caption Generation System</p>
+            <p>Powered by Stanford 40 Actions Dataset + COCO Captions</p>
         </div>
     </footer>
 
